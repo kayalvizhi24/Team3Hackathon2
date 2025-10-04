@@ -1,277 +1,3 @@
-<<<<<<< HEAD
-=======
-// import React, { useState, useEffect, useRef } from 'react';
-// import { calculateDistance } from '../utils/helpers';
-// import { vocabularyAPI } from '../services/api';
-// import HUD from './HUD';
-// import Fish from './Fish';
-// import Garbage from './Garbage';
-// import Scoreboard from './Scoreboard';
-
-// export default function GamePlay({ 
-//   score, 
-//   setScore, 
-//   lives, 
-//   setLives, 
-//   setGameState,
-//   caughtWords,
-//   setCaughtWords 
-// }) {
-//   const [currentTarget, setCurrentTarget] = useState(null);
-//   const [currentWordSet, setCurrentWordSet] = useState([]);
-//   const [fish, setFish] = useState([]);
-//   const [garbage, setGarbage] = useState([]);
-//   const [hookX, setHookX] = useState(50);
-//   const [hookY, setHookY] = useState(25);
-//   const [feedback, setFeedback] = useState('');
-//   const [showScoreboard, setShowScoreboard] = useState(false);
-//   const [loading, setLoading] = useState(true);
-//   const gameRef = useRef(null);
-
-//   // Fetch random vocabulary from backend
-//   const fetchVocabulary = async () => {
-//     try {
-//       setLoading(true);
-//       const response = await vocabularyAPI.getRandom(5);
-//       if (response.success && response.data.length > 0) {
-//         setCurrentWordSet(response.data);
-//         const randomTarget = response.data[Math.floor(Math.random() * response.data.length)];
-//         setCurrentTarget(randomTarget);
-//       }
-//     } catch (error) {
-//       console.error('Error fetching vocabulary:', error);
-//       alert('Unable to connect to server. Please make sure the backend is running.');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   // Set new target word from current set
-//   const pickNewTarget = () => {
-//     if (currentWordSet.length > 0) {
-//       const randomTarget = currentWordSet[Math.floor(Math.random() * currentWordSet.length)];
-//       setCurrentTarget(randomTarget);
-//     }
-//   };
-
-//   // Initialize word set
-//   useEffect(() => {
-//     fetchVocabulary();
-//   }, []);
-
-//   // Spawn fish and garbage
-//   useEffect(() => {
-//     if (currentWordSet.length === 0) return;
-    
-//     const spawnFish = setInterval(() => {
-//       const vocab = currentWordSet[Math.floor(Math.random() * currentWordSet.length)];
-//       const newFish = {
-//         id: Date.now() + Math.random(),
-//         x: Math.random() < 0.5 ? -15 : 115,
-//         y: Math.random() * 50 + 35,
-//         direction: Math.random() < 0.5 ? 1 : -1,
-//         speed: Math.random() * 0.25 + 0.15,
-//         vocab: vocab
-//       };
-//       setFish(prev => [...prev, newFish]);
-//     }, 2500);
-
-//     const spawnGarbage = setInterval(() => {
-//       const newGarbage = {
-//         id: Date.now() + Math.random() + 10000,
-//         x: Math.random() < 0.5 ? -15 : 115,
-//         y: Math.random() * 50 + 35,
-//         direction: Math.random() < 0.5 ? 1 : -1,
-//         speed: Math.random() * 0.3 + 0.2
-//       };
-//       setGarbage(prev => [...prev, newGarbage]);
-//     }, 5000);
-
-//     return () => {
-//       clearInterval(spawnFish);
-//       clearInterval(spawnGarbage);
-//     };
-//   }, [currentWordSet]);
-
-//   // Move fish and garbage
-//   useEffect(() => {
-//     const moveObjects = setInterval(() => {
-//       setFish(prev => prev
-//         .map(f => ({ ...f, x: f.x + (f.speed * f.direction) }))
-//         .filter(f => f.x > -20 && f.x < 120)
-//       );
-//       setGarbage(prev => prev
-//         .map(g => ({ ...g, x: g.x + (g.speed * g.direction) }))
-//         .filter(g => g.x > -20 && g.x < 120)
-//       );
-//     }, 20);
-
-//     return () => clearInterval(moveObjects);
-//   }, []);
-
-//   // Collision detection
-//   // useEffect(() => {
-//   //   const checkCollisions = () => {
-//   //     fish.forEach(f => {
-//   //       const distance = calculateDistance(f.x, f.y, hookX, hookY);
-        
-//   //       if (distance < 20) {
-//   // Collision detection
-//  // Collision detection
-//   useEffect(() => {
-//     const checkCollisions = () => {
-//       fish.forEach(f => {
-//         const distance = calculateDistance(f.x, f.y, hookX, hookY);
-        
-//         if (distance < 15) {
-//         console.log('Close fish:', distance.toFixed(2), 'Fish pos:', f.x.toFixed(1), f.y.toFixed(1), 'Hook pos:', hookX.toFixed(1), hookY.toFixed(1));
-//       }
-      
-//       if (distance < 8) {
-//           const isCorrect = f.vocab.word === currentTarget?.word;
-          
-//           if (isCorrect) {
-//             const points = 10;
-//             setScore(prev => prev + points);
-//             setFeedback(`✓ Correct! +${points} points`);
-//             setCaughtWords(prev => [...prev, { 
-//               word: f.vocab.word, 
-//               translation: f.vocab.translation, 
-//               points 
-//             }]);
-//             setShowScoreboard(true);
-//             setTimeout(() => setShowScoreboard(false), 3000);
-//             pickNewTarget();
-//           } else {
-//             setFeedback(`Try again! That's "${f.vocab.translation}"`);
-//           }
-          
-//           setFish(prev => prev.filter(fish => fish.id !== f.id));
-//           setTimeout(() => setFeedback(''), 2000);
-//         }
-//       });
-
-//       garbage.forEach(g => {
-//         const isOnLine = Math.abs(g.x - hookX) < 4;
-//         const isInLineRange = g.y >= 12 && g.y <= hookY;
-        
-//         if (isOnLine && isInLineRange) {
-//           setLives(prev => {
-//             const newLives = prev - 1;
-//             if (newLives <= 0) setGameState('gameover');
-//             return newLives;
-//           });
-//           setFeedback('✗ Garbage hit your line! -1 life');
-//           setGarbage(prev => prev.filter(garbage => garbage.id !== g.id));
-//           setTimeout(() => setFeedback(''), 2000);
-//         }
-//       });
-//     };
-
-//     const interval = setInterval(checkCollisions, 30);
-//     return () => clearInterval(interval);
-//   }, [fish, garbage, hookX, hookY, currentTarget]);
-
-//   // Mouse movement
-//   const handleMouseMove = (e) => {
-//     const rect = gameRef.current?.getBoundingClientRect();
-//     if (!rect) return;
-    
-//     const x = ((e.clientX - rect.left) / rect.width) * 100;
-//     const y = ((e.clientY - rect.top) / rect.height) * 100;
-    
-//     setHookX(Math.max(5, Math.min(95, x)));
-//     setHookY(Math.max(10, Math.min(95, y)));
-//     console.log('Hook position:', x, y, 'Final:', Math.max(5, Math.min(95, x)), Math.max(15, Math.min(90, y)));
-//   };
-
-//   if (loading) {
-//     return (
-//       <div className="w-full h-screen bg-gradient-to-b from-cyan-100 to-blue-500 flex items-center justify-center">
-//         <div className="bg-white rounded-lg shadow-2xl p-12 text-center">
-//           <div className="text-4xl mb-4">🎣</div>
-//           <p className="text-2xl font-bold text-blue-900">Loading vocabulary...</p>
-//         </div>
-//       </div>
-//     );
-//   }
-//   return (
-//     <div 
-//       ref={gameRef}
-//       onMouseMove={handleMouseMove}
-//       className="w-full h-screen bg-gradient-to-b from-cyan-100 to-blue-500 relative overflow-hidden"
-//     >
-//       {/* Target word display */}
-//       <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-white rounded-lg shadow-2xl px-8 py-4 border-4 border-blue-600 z-20">
-//         <p className="text-lg text-gray-600 mb-1 text-center">Catch the fish that means:</p>
-//         <p className="text-4xl font-bold text-blue-900 text-center">
-//           {currentTarget ? currentTarget.translation.toUpperCase() : '...'}
-//         </p>
-//       </div>
-
-//       <HUD score={score} lives={lives} />
-//       <Scoreboard caughtWords={caughtWords} show={showScoreboard} />
-
-//       {/* Feedback message */}
-//       {feedback && (
-//         <div className={`absolute top-32 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg text-xl font-bold shadow-lg z-20 ${
-//           feedback.includes('✓') ? 'bg-green-500 text-white' : 
-//           feedback.includes('Try again') ? 'bg-yellow-500 text-white' : 'bg-red-500 text-white'
-//         }`}>
-//           {feedback}
-//         </div>
-//       )}
-
-//       {/* Ice surface */}
-//       <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-cyan-50 to-transparent"></div>
-      
-//       {/* Fisherman/Rod holder */}
-//       <div className="absolute top-4 z-10" style={{ left: `${hookX}%`, transform: 'translateX(-50%)' }}>
-//         <div className="w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center border-4 border-blue-900">
-//           <span className="text-3xl">🧊</span>
-//         </div>
-//       </div>
-
-//       {/* Fishing line */}
-//       <svg className="absolute inset-0 w-full h-full pointer-events-none z-5">
-//         <line
-//           x1={`${hookX}%`}
-//           y1="80"
-//           x2={`${hookX}%`}
-//           y2={`${hookY}%`}
-//           stroke="#1f2937"
-//           strokeWidth="3"
-//           strokeDasharray="5,5"
-//         />
-//       </svg>
-
-//       {/* Hook */}
-//       <div
-//         className="absolute w-8 h-8 rounded-full pointer-events-none z-10 flex items-center justify-center"
-//         style={{ 
-//           left: `${hookX}%`, 
-//           top: `${hookY}%`, 
-//           transform: 'translate(-50%, -50%)',
-//           background: 'radial-gradient(circle, #fbbf24 0%, #f59e0b 100%)',
-//           boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
-//         }}
-//       >
-//         <div className="w-3 h-3 bg-gray-800 rounded-full"></div>
-//       </div>
-
-//       <Fish fish={fish} />
-//       <Garbage garbage={garbage} />
-
-//       {/* Instructions */}
-//       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black bg-opacity-70 text-white px-6 py-3 rounded-full text-lg">
-//         Move mouse to control hook
-//       </div>
-//     </div>
-//   );
-// }
-
->>>>>>> 8dc48ec04544cf394e9ed43645e3e58342ff1356
-
 import React, { useState, useEffect, useRef } from 'react';
 import { calculateDistance } from '../utils/helpers';
 import { vocabularyAPI } from '../services/api';
@@ -280,20 +6,17 @@ import Salmon from './Salmon';
 import LacrosseStick from './LacrosseStick';
 import Scoreboard from './Scoreboard';
 
-export default function GamePlay({
-  score,
-  setScore,
-  lives,
-  setLives,
+export default function GamePlay({ 
+  score, 
+  setScore, 
+  lives, 
+  setLives, 
   setGameState,
   caughtWords,
-  setCaughtWords,
+  setCaughtWords 
 }) {
   const [currentTarget, setCurrentTarget] = useState(null);
   const [currentWordSet, setCurrentWordSet] = useState([]);
-  const [shuffledWords, setShuffledWords] = useState([]);
-  const [wordIndex, setWordIndex] = useState(0);
-
   const [fish, setFish] = useState([]);
   const [garbage, setGarbage] = useState([]);
   const [hookX, setHookX] = useState(50);
@@ -301,25 +24,16 @@ export default function GamePlay({
   const [feedback, setFeedback] = useState('');
   const [showScoreboard, setShowScoreboard] = useState(false);
   const [loading, setLoading] = useState(true);
-
   const gameRef = useRef(null);
 
-  // -----------------------------
-  // Fetch vocabulary
   const fetchVocabulary = async () => {
     try {
       setLoading(true);
       const response = await vocabularyAPI.getRandom(5);
       if (response.success && response.data.length > 0) {
         setCurrentWordSet(response.data);
-
         const randomTarget = response.data[Math.floor(Math.random() * response.data.length)];
         setCurrentTarget(randomTarget);
-
-        // Shuffle words
-        const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
-        setShuffledWords(shuffle(response.data));
-        setWordIndex(0);
       }
     } catch (error) {
       console.error('Error fetching vocabulary:', error);
@@ -329,12 +43,6 @@ export default function GamePlay({
     }
   };
 
-  useEffect(() => {
-    fetchVocabulary();
-  }, []);
-
-  // -----------------------------
-  // Pick a new target word
   const pickNewTarget = () => {
     if (currentWordSet.length > 0) {
       const randomTarget = currentWordSet[Math.floor(Math.random() * currentWordSet.length)];
@@ -342,102 +50,58 @@ export default function GamePlay({
     }
   };
 
-  // -----------------------------
-  // Handle catching a fish
-  const handleCatchFish = (f) => {
-    const isCorrect = f.vocab.word === currentTarget?.word;
-
-    if (isCorrect) {
-      const points = 10;
-      setScore((prev) => prev + points);
-      setCaughtWords((prev) => [
-        ...prev,
-        {
-          word: f.vocab.word,
-          translation: f.vocab.translation,
-          points,
-        },
-      ]);
-      setFeedback(`✓ Correct! +${points} points`);
-      setShowScoreboard(true);
-      setTimeout(() => setShowScoreboard(false), 3000);
-      pickNewTarget();
-    } else {
-      setFeedback(`Try again! That's "${f.vocab.translation}"`);
-      setTimeout(() => setFeedback(''), 2000);
-    }
-
-    setFish((prev) => prev.filter((x) => x.id !== f.id));
-  };
-
-  // -----------------------------
-  // Spawn multiple fish periodically
   useEffect(() => {
-    if (shuffledWords.length === 0) return;
+    fetchVocabulary();
+  }, []);
 
-    const spawnFishInterval = setInterval(() => {
-      const numberOfFish = 2; // spawn 2 fish at once
-      const newFishArray = [];
-
-      for (let i = 0; i < numberOfFish; i++) {
-        const vocab = shuffledWords[wordIndex];
-        setWordIndex((prev) => (prev + 1) % shuffledWords.length);
-
-        newFishArray.push({
-          id: Date.now() + Math.random(),
-          x: Math.random() < 0.5 ? -15 : 115,
-          y: Math.random() * 50 + 35,
-          direction: Math.random() < 0.5 ? 1 : -1,
-          speed: Math.random() * 0.25 + 0.15,
-          vocab,
-        });
-      }
-
-      setFish((prev) => [...prev, ...newFishArray]);
-    }, 1500); // spawn every 1.5s
-
-    return () => clearInterval(spawnFishInterval);
-  }, [shuffledWords, wordIndex]);
-
-  // -----------------------------
-  // Spawn garbage
   useEffect(() => {
+    if (currentWordSet.length === 0) return;
+    
+    const spawnFish = setInterval(() => {
+      const vocab = currentWordSet[Math.floor(Math.random() * currentWordSet.length)];
+      const newFish = {
+        id: Date.now() + Math.random(),
+        x: Math.random() < 0.5 ? -15 : 115,
+        y: Math.random() * 50 + 35,
+        direction: Math.random() < 0.5 ? 1 : -1,
+        speed: Math.random() * 0.25 + 0.15,
+        vocab: vocab
+      };
+      setFish(prev => [...prev, newFish]);
+    }, 2500);
+
     const spawnGarbage = setInterval(() => {
       const newGarbage = {
         id: Date.now() + Math.random() + 10000,
         x: Math.random() < 0.5 ? -15 : 115,
         y: Math.random() * 50 + 35,
         direction: Math.random() < 0.5 ? 1 : -1,
-        speed: Math.random() * 0.3 + 0.2,
+        speed: Math.random() * 0.3 + 0.2
       };
-      setGarbage((prev) => [...prev, newGarbage]);
+      setGarbage(prev => [...prev, newGarbage]);
     }, 5000);
 
-    return () => clearInterval(spawnGarbage);
-  }, []);
+    return () => {
+      clearInterval(spawnFish);
+      clearInterval(spawnGarbage);
+    };
+  }, [currentWordSet]);
 
-  // -----------------------------
-  // Move fish and garbage
   useEffect(() => {
     const moveObjects = setInterval(() => {
-      setFish((prev) =>
-        prev
-          .map((f) => ({ ...f, x: f.x + f.speed * f.direction }))
-          .filter((f) => f.x > -20 && f.x < 120)
+      setFish(prev => prev
+        .map(f => ({ ...f, x: f.x + (f.speed * f.direction) }))
+        .filter(f => f.x > -20 && f.x < 120)
       );
-
-      setGarbage((prev) =>
-        prev
-          .map((g) => ({ ...g, x: g.x + g.speed * g.direction }))
-          .filter((g) => g.x > -20 && g.x < 120)
+      setGarbage(prev => prev
+        .map(g => ({ ...g, x: g.x + (g.speed * g.direction) }))
+        .filter(g => g.x > -20 && g.x < 120)
       );
     }, 20);
 
     return () => clearInterval(moveObjects);
   }, []);
 
-<<<<<<< HEAD
-  // Collision detection
   useEffect(() => {
     const checkCollisions = () => {
       fish.forEach(f => {
@@ -477,7 +141,7 @@ export default function GamePlay({
             if (newLives <= 0) setGameState('gameover');
             return newLives;
           });
-          setFeedback('✗ A Lacrosse Stick hit your line! -1 life');
+          setFeedback('✗ Lacrosse stick hit your line! -1 life');
           setGarbage(prev => prev.filter(garbage => garbage.id !== g.id));
           setTimeout(() => setFeedback(''), 2000);
         }
@@ -488,17 +152,13 @@ export default function GamePlay({
     return () => clearInterval(interval);
   }, [fish, garbage, hookX, hookY, currentTarget]);
 
-=======
-  // -----------------------------
->>>>>>> 8dc48ec04544cf394e9ed43645e3e58342ff1356
-  // Mouse movement
   const handleMouseMove = (e) => {
     const rect = gameRef.current?.getBoundingClientRect();
     if (!rect) return;
-
+    
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
-
+    
     setHookX(Math.max(5, Math.min(95, x)));
     setHookY(Math.max(15, Math.min(90, y)));
   };
@@ -515,14 +175,13 @@ export default function GamePlay({
   }
 
   return (
-    <div
+    <div 
       ref={gameRef}
       onMouseMove={handleMouseMove}
       className="w-full h-screen bg-gradient-to-b from-cyan-100 to-blue-500 relative overflow-hidden"
     >
-      {/* Target word */}
       <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-white rounded-lg shadow-2xl px-8 py-4 border-4 border-blue-600 z-20">
-        <p className="text-lg text-gray-600 mb-1 text-center">Catch the fish that means:</p>
+        <p className="text-lg text-gray-600 mb-1 text-center">Catch the salmon that means:</p>
         <p className="text-4xl font-bold text-blue-900 text-center">
           {currentTarget ? currentTarget.translation.toUpperCase() : '...'}
         </p>
@@ -531,38 +190,24 @@ export default function GamePlay({
       <HUD score={score} lives={lives} />
       <Scoreboard caughtWords={caughtWords} show={showScoreboard} />
 
-      {/* Feedback */}
       {feedback && (
-        <div
-          className={`absolute top-32 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg text-xl font-bold shadow-lg z-20 ${
-            feedback.includes('✓') ? 'bg-green-500 text-white' : feedback.includes('Try again') ? 'bg-yellow-500 text-white' : 'bg-red-500 text-white'
-          }`}
-        >
+        <div className={`absolute top-32 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg text-xl font-bold shadow-lg z-20 ${
+          feedback.includes('✓') ? 'bg-green-500 text-white' : 
+          feedback.includes('Try again') ? 'bg-yellow-500 text-white' : 'bg-red-500 text-white'
+        }`}>
           {feedback}
         </div>
       )}
 
-      {/* Ice surface */}
       <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-cyan-50 to-transparent"></div>
-<<<<<<< HEAD
       
-      {/* Fisherman/Rod holder */}
       <div className="absolute top-0 z-10" style={{ left: `${hookX}%`, transform: 'translateX(-50%)' }}>
         <div className="flex justify-center">
           <span style={{ fontSize: '16rem' }}>🛶</span>
-=======
-
-      {/* Fisherman */}
-      <div className="absolute top-4 z-10" style={{ left: `${hookX}%`, transform: 'translateX(-50%)' }}>
-        <div className="w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center border-4 border-blue-900">
-          <span className="text-3xl">🧊</span>
->>>>>>> 8dc48ec04544cf394e9ed43645e3e58342ff1356
         </div>
       </div>
 
-      {/* Fishing line */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none z-5">
-<<<<<<< HEAD
         <line
           x1={`${hookX}%`}
           y1="256"
@@ -572,42 +217,22 @@ export default function GamePlay({
           strokeWidth="3"
           strokeDasharray="5,5"
         />
-=======
-        <line x1={`${hookX}%`} y1="80" x2={`${hookX}%`} y2={`${hookY}%`} stroke="#1f2937" strokeWidth="3" strokeDasharray="5,5" />
->>>>>>> 8dc48ec04544cf394e9ed43645e3e58342ff1356
       </svg>
 
-      {/* Hook */}
       <div
-<<<<<<< HEAD
         className="absolute pointer-events-none z-10 flex items-center justify-center"
         style={{ 
           left: `${hookX}%`, 
           top: `${hookY}%`, 
           transform: 'translate(-50%, -50%)'
-=======
-        className="absolute w-8 h-8 rounded-full pointer-events-none z-10 flex items-center justify-center"
-        style={{
-          left: `${hookX}%`,
-          top: `${hookY}%`,
-          transform: 'translate(-50%, -50%)',
-          background: 'radial-gradient(circle, #fbbf24 0%, #f59e0b 100%)',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
->>>>>>> 8dc48ec04544cf394e9ed43645e3e58342ff1356
         }}
       >
-        <div className="text-6xl">🪝</div>
+        <div className="text-4xl">🪝</div>
       </div>
 
-<<<<<<< HEAD
       <Salmon fish={fish} />
       <LacrosseStick garbage={garbage} />
-=======
-      <Fish fish={fish} onCatch={handleCatchFish} />
-      <Garbage garbage={garbage} />
->>>>>>> 8dc48ec04544cf394e9ed43645e3e58342ff1356
 
-      {/* Instructions */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black bg-opacity-70 text-white px-6 py-3 rounded-full text-lg">
         Move mouse to control hook
       </div>
