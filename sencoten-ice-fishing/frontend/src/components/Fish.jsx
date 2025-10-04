@@ -1,26 +1,24 @@
 import React from 'react';
 
-export default function Fish({ fish }) {
+export default function Fish({ fish, onCatch }) {
   return (
     <>
       {fish.map(f => (
         <div
           key={f.id}
-          className="absolute transition-transform"
+          className="absolute transition-transform cursor-pointer"
           style={{ 
             left: `${f.x}%`, 
             top: `${f.y}%`,
             transform: f.direction === 1 ? 'scaleX(-1)' : 'scaleX(1)'
           }}
+          onClick={() => onCatch(f)} // Call GamePlay's handler
         >
           <div className="relative">
             <div className="text-5xl">🐟</div>
-            {/* Counter-flip the text */}
             <div 
               className="absolute -top-6 left-1/2 -translate-x-1/2 bg-yellow-100 px-3 py-1 rounded-full shadow-md border-2 border-yellow-400 whitespace-nowrap text-sm font-bold"
-              style={{ 
-                transform: f.direction === 1 ? 'scaleX(-1)' : 'scaleX(1)' 
-              }}
+              style={{ transform: f.direction === 1 ? 'scaleX(-1)' : 'scaleX(1)' }}
             >
               {f.vocab.word}
             </div>
