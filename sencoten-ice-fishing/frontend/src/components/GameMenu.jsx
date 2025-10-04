@@ -13,7 +13,7 @@ export default function GameMenu({ onStartGame }) {
             <li>🖱️ Move your mouse to control the hook up, down, left, and right</li>
             <li>🐟 Touch the fish with the matching SENĆOŦEN word</li>
             <li>📊 Scoreboard shows your catches!</li>
-            <li>🗑️ Avoid garbage with your LINE (costs 1 life)</li>
+            <li>🥍 Avoid Lacrosse sticks!(costs 1 life)</li>
             <li>❌ Wrong fish? No penalty - just try again!</li>
             <li>❤️ You have 3 lives - game ends when you lose all lives</li>
           </ul>

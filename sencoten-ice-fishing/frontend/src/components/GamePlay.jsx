@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { calculateDistance } from '../utils/helpers';
 import { vocabularyAPI } from '../services/api';
 import HUD from './HUD';
-import Fish from './Fish';
-import Garbage from './Garbage';
+import Salmon from './Salmon';
+import LacrosseStick from './LacrosseStick';
 import Scoreboard from './Scoreboard';
 
 export default function GamePlay({ 
@@ -147,7 +148,7 @@ export default function GamePlay({
             if (newLives <= 0) setGameState('gameover');
             return newLives;
           });
-          setFeedback('✗ Garbage hit your line! -1 life');
+          setFeedback('✗ A Lacrosse Stick hit your line! -1 life');
           setGarbage(prev => prev.filter(garbage => garbage.id !== g.id));
           setTimeout(() => setFeedback(''), 2000);
         }
@@ -211,9 +212,9 @@ export default function GamePlay({
       <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-cyan-50 to-transparent"></div>
       
       {/* Fisherman/Rod holder */}
-      <div className="absolute top-4 z-10" style={{ left: `${hookX}%`, transform: 'translateX(-50%)' }}>
-        <div className="w-16 h-16 bg-blue-800 rounded-full flex items-center justify-center border-4 border-blue-900">
-          <span className="text-3xl">🧊</span>
+      <div className="absolute top-0 z-10" style={{ left: `${hookX}%`, transform: 'translateX(-50%)' }}>
+        <div className="flex justify-center">
+          <span style={{ fontSize: '16rem' }}>🛶</span>
         </div>
       </div>
 
@@ -221,7 +222,7 @@ export default function GamePlay({
       <svg className="absolute inset-0 w-full h-full pointer-events-none z-5">
         <line
           x1={`${hookX}%`}
-          y1="80"
+          y1="256"
           x2={`${hookX}%`}
           y2={`${hookY}%`}
           stroke="#1f2937"
@@ -232,20 +233,18 @@ export default function GamePlay({
 
       {/* Hook */}
       <div
-        className="absolute w-8 h-8 rounded-full pointer-events-none z-10 flex items-center justify-center"
+        className="absolute pointer-events-none z-10 flex items-center justify-center"
         style={{ 
           left: `${hookX}%`, 
           top: `${hookY}%`, 
-          transform: 'translate(-50%, -50%)',
-          background: 'radial-gradient(circle, #fbbf24 0%, #f59e0b 100%)',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+          transform: 'translate(-50%, -50%)'
         }}
       >
-        <div className="w-3 h-3 bg-gray-800 rounded-full"></div>
+        <div className="text-6xl">🪝</div>
       </div>
 
-      <Fish fish={fish} />
-      <Garbage garbage={garbage} />
+      <Salmon fish={fish} />
+      <LacrosseStick garbage={garbage} />
 
       {/* Instructions */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black bg-opacity-70 text-white px-6 py-3 rounded-full text-lg">
