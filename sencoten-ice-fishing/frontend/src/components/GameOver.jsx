@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trophy } from 'lucide-react';
 import { scoreAPI } from '../services/api';
 
-export default function GameOver({ score, caughtWords, onPlayAgain }) {
+export default function GameOver({ score, caughtWords, onPlayAgain, didWin }) {
   const [playerName, setPlayerName] = useState('');
   const [scoreSaved, setScoreSaved] = useState(false);
   const [topScores, setTopScores] = useState([]);
@@ -48,7 +48,16 @@ export default function GameOver({ score, caughtWords, onPlayAgain }) {
   return (
     <div className="w-full h-screen bg-gradient-to-b from-gray-800 via-gray-700 to-blue-900 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-2xl p-12 text-center max-w-4xl">
-        <h1 className="text-5xl font-bold text-gray-900 mb-4">Game Over!</h1>
+        {/* Title changes based on win/loss */}
+        <h1 className="text-5xl font-bold mb-4" style={{ color: didWin ? '#10b981' : '#374151' }}>
+          {didWin ? '🎉 You Win!' : 'Game Over!'}
+        </h1>
+        
+        {didWin && (
+          <p className="text-2xl font-bold text-green-600 mb-4">
+            Congratulations! You reached 50 points!
+          </p>
+        )}
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Score Section */}
@@ -71,9 +80,12 @@ export default function GameOver({ score, caughtWords, onPlayAgain }) {
               </div>
             )}
 
-            {/* Save Score Form */}
+            {/* Save Score Form - Same for both win and loss */}
             {!scoreSaved && (
               <div className="mt-6">
+                <p className="text-lg font-bold text-gray-700 mb-2">
+                  {didWin ? 'Save your winning score!' : 'Save your score'}
+                </p>
                 <input
                   type="text"
                   placeholder="Enter your name"
@@ -93,14 +105,14 @@ export default function GameOver({ score, caughtWords, onPlayAgain }) {
 
             {scoreSaved && (
               <div className="mt-6 bg-green-100 p-4 rounded-lg">
-                <p className="text-green-700 font-bold">✓ Score saved successfully!</p>
+                <p className="text-green-700 font-bold">Score saved successfully!</p>
               </div>
             )}
           </div>
 
           {/* Leaderboard Section */}
           <div className="bg-blue-50 p-8 rounded-lg">
-            <h2 className="text-3xl font-bold text-blue-900 mb-4">🏆 Top Scores</h2>
+            <h2 className="text-3xl font-bold text-blue-900 mb-4">Top Scores</h2>
             {topScores.length > 0 ? (
               <div className="space-y-2">
                 {topScores.map((s, idx) => (

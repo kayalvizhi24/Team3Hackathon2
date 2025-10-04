@@ -9,12 +9,14 @@ export default function App() {
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
   const [caughtWords, setCaughtWords] = useState([]);
+  const [didWin, setDidWin] = useState(false);
 
   const startGame = () => {
     setGameState('playing');
     setScore(0);
     setLives(3);
     setCaughtWords([]);
+    setDidWin(false);
   };
 
   if (gameState === 'menu') {
@@ -26,7 +28,8 @@ export default function App() {
       <GameOver 
         score={score} 
         caughtWords={caughtWords} 
-        onPlayAgain={startGame} 
+        onPlayAgain={startGame}
+        didWin={didWin}
       />
     );
   }
@@ -40,6 +43,7 @@ export default function App() {
       setGameState={setGameState}
       caughtWords={caughtWords}
       setCaughtWords={setCaughtWords}
+      setDidWin={setDidWin}
     />
   );
 }
