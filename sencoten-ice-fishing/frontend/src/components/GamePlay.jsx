@@ -113,7 +113,7 @@ export default function GamePlay({
       fish.forEach(f => {
         const distance = calculateDistance(f.x, f.y, hookX, hookY);
         
-        if (distance < 7) {
+        if (distance < 10) {
           const isCorrect = f.vocab.word === currentTarget?.word;
           
           if (isCorrect) {
